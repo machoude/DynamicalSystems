@@ -1,0 +1,11 @@
+---
+title: "Project Guide"
+---
+
+# ![]()Overview
+
+This website collects **theory-driven examples** of dynamical systems implemented in **R**, with an emphasis on nonlinear dynamics, chaos, and predictability from time series.
+
+The goal is not speed. The goal is understanding.
+
+Start with nonlinear dynamical systems, then move to practical tools like the `DChaos` library.

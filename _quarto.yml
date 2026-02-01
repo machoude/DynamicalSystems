@@ -1,0 +1,19 @@
+project:
+  type: website
+  
+    
+website:
+  title: "Dynamical Systems with R"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: dsystems.qmd
+        text: Dynamical Systems   
+      - href: chaos.qmd
+        text: DChaos 
+
+format:
+  html:
+    theme: darkly
+    toc: true

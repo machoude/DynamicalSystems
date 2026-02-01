@@ -1,0 +1,107 @@
+[
+  {
+    "objectID": "chaos.html",
+    "href": "chaos.html",
+    "title": "Chaos Theory with DChaos library",
+    "section": "",
+    "text": "library(DChaos)\nlibrary(readr)\n# Load the BTC data\nbtc_1d = read_csv(\"btc_1d_data_2018_to_2025.csv\")\nbtc_1d$Date = as.Date(btc_1d$`Open time`)\nbtc_1d = btc_1d[,c(\"Date\",\"High\")]"
+  },
+  {
+    "objectID": "chaos.html#state-space-reconstruction",
+    "href": "chaos.html#state-space-reconstruction",
+    "title": "Chaos Theory with DChaos library",
+    "section": "State space reconstruction",
+    "text": "State space reconstruction\n\nmodel = netfit(btc_1d$High, m = 1:6,lag = 1:6,timelapse = \"FIXED\",h = 2:10)\njacobian = jacobian.net(model = model)\nsummary(model)"
+  },
+  {
+    "objectID": "dsystems.html#what-is-a-dynamical-system",
+    "href": "dsystems.html#what-is-a-dynamical-system",
+    "title": "Nonlinear Dynamical Systems",
+    "section": "What is a dynamical system?",
+    "text": "What is a dynamical system?\nA dynamical system describes how the state of a system evolves over time according to a deterministic rule:\n[ x_{t+1} = f(x_t) ]\nor, in continuous time,\n[ = f(x) ]"
+  },
+  {
+    "objectID": "dsystems.html#why-nonlinearity-matters",
+    "href": "dsystems.html#why-nonlinearity-matters",
+    "title": "Nonlinear Dynamical Systems",
+    "section": "Why nonlinearity matters",
+    "text": "Why nonlinearity matters\nWhen ( f ) is nonlinear:\n\nSuperposition fails\nSmall perturbations may grow\nLong-term behavior becomes hard to predict\n\nThis is not a numerical problem. It is a structural one."
+  },
+  {
+    "objectID": "dsystems.html#key-properties",
+    "href": "dsystems.html#key-properties",
+    "title": "Nonlinear Dynamical Systems",
+    "section": "Key properties",
+    "text": "Key properties\n\nFixed points and stability\nExplain stability qualitatively, not heroically.\n\n\nBifurcations\nParameters change, behavior reorganizes.\n\n\nChaos\nDeterministic rules producing unpredictable trajectories.\nSensitivity to initial conditions is not randomness."
+  },
+  {
+    "objectID": "dsystems.html#from-equations-to-data",
+    "href": "dsystems.html#from-equations-to-data",
+    "title": "Nonlinear Dynamical Systems",
+    "section": "From equations to data",
+    "text": "From equations to data\nIn many real systems, the governing equations are unknown. We observe only a time series.\nThis motivates: - Phase-space reconstruction - Invariant measures - Data-driven diagnostics of chaos"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Project Guide",
+    "section": "",
+    "text": "Overview\nThis website collects theory-driven examples of dynamical systems implemented in R, with an emphasis on nonlinear dynamics, chaos, and predictability from time series.\nThe goal is not speed. The goal is understanding.\nStart with nonlinear dynamical systems, then move to practical tools like the DChaos library."
+  },
+  {
+    "objectID": "chaos.html#date",
+    "href": "chaos.html#date",
+    "title": "Chaos Theory - DChaos",
+    "section": "",
+    "text": "library(DChaos)\nlibrary(readr)\n# Load the BTC data\nbtc_1d = read_csv(\"btc_1d_data_2018_to_2025.csv\")\n\nRows: 2951 Columns: 12\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr  (2): Open time, Close time\ndbl (10): Open, High, Low, Close, Volume, Quote asset volume, Number of trad...\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\nbtc_1d$Date = as.Date(btc_1d$`Open time`)\nbtc_1d = btc_1d[,c(\"Date\",\"High\")]"
+  },
+  {
+    "objectID": "chaos.html#lyapunov-exponent",
+    "href": "chaos.html#lyapunov-exponent",
+    "title": "Chaos Theory with DChaos library",
+    "section": "Lyapunov Exponent",
+    "text": "Lyapunov Exponent\n\nexponent.max = lyapunov.max(data = jacobian, blocking = \"BOOT\",doplot = FALSE)\nsummary(exponent.max)\n\nCall:\nLargest Lyapunov exponent \n\nCoefficients:\n            Estimate Std. Error   z value     Pr(&gt;|z|)\nExponent -0.07216916 0.03391099 -20.85195 7.316176e-97\n---\nProcedure: Norma-2 by bootstrap blocking method \nEmbedding dimension: 2, Time-delay: 1, No. hidden units: 2\nSample size: 2949, Block length: 96, No. blocks: 1000\n\n\n\nexponent.spec = lyapunov.spec(data = jacobian, blocking = \"BOOT\",doplot = FALSE)\nsummary(exponent.spec)\n\nCall:\nLyapunov exponent spectrum \n\nCoefficients:\n              Estimate  Std. Error     z value     Pr(&gt;|z|)\nExponent 1 -0.07213056 0.034124864   -20.71018 1.401906e-95\nExponent 2 -2.16370134 0.006763006 -3134.67959 0.000000e+00\n---\nProcedure: QR decomposition by bootstrap blocking method \nEmbedding dimension: 2, Time-delay: 1, No. hidden units: 2\nSample size: 2949, Block length: 96, No. blocks: 1000"
+  },
+  {
+    "objectID": "chaos.html#data",
+    "href": "chaos.html#data",
+    "title": "Chaos Theory with DChaos library",
+    "section": "",
+    "text": "library(DChaos)\nlibrary(readr)\n# Load the BTC data\nbtc_1d = read_csv(\"btc_1d_data_2018_to_2025.csv\")\nbtc_1d$Date = as.Date(btc_1d$`Open time`)\nbtc_1d = btc_1d[,c(\"Date\",\"High\")]"
+  },
+  {
+    "objectID": "dsystems.html",
+    "href": "dsystems.html",
+    "title": "The Theory of Dynamics and Time Series",
+    "section": "",
+    "text": "At its core, a Dynamical System is a mathematical description of how a point moves through a space over time. For a STEM graduate, the most intuitive way to think about this is through the lens of State Space.\nA system is defined by:\n\nState Space (\\(M\\)): The manifold or set containing all possible states of the system (e.g., the position and momentum of a planet).\nEvolution Rule: A deterministic or stochastic function that dictates the future state based on the current one.\n\n\n\nIn R, we typically deal with two types of mathematical representations:\n\nContinuous-Time (Flows): Modeled by Differential Equations. We focus on the rate of change. \\[\\frac{dx}{dt} = f(x, t)\\] Used in: Physics simulations, chemical kinetics, and population models.\nDiscrete-Time (Maps): Modeled by Difference Equations. We focus on the step from one moment to the next. \\[x_{n+1} = f(x_n)\\] Used in: Financial modeling, digital signal processing, and iterative algorithms."
+  },
+  {
+    "objectID": "dsystems.html#defining-the-dynamical-system",
+    "href": "dsystems.html#defining-the-dynamical-system",
+    "title": "The Theory of Dynamics and Time Series",
+    "section": "",
+    "text": "At its core, a Dynamical System is a mathematical description of how a point moves through a space over time. For a STEM graduate, the most intuitive way to think about this is through the lens of State Space.\nA system is defined by:\n\nState Space (\\(M\\)): The manifold or set containing all possible states of the system (e.g., the position and momentum of a planet).\nEvolution Rule: A deterministic or stochastic function that dictates the future state based on the current one.\n\n\n\nIn R, we typically deal with two types of mathematical representations:\n\nContinuous-Time (Flows): Modeled by Differential Equations. We focus on the rate of change. \\[\\frac{dx}{dt} = f(x, t)\\] Used in: Physics simulations, chemical kinetics, and population models.\nDiscrete-Time (Maps): Modeled by Difference Equations. We focus on the step from one moment to the next. \\[x_{n+1} = f(x_n)\\] Used in: Financial modeling, digital signal processing, and iterative algorithms."
+  },
+  {
+    "objectID": "dsystems.html#the-bridge-how-a-time-series-is-a-dynamical-system",
+    "href": "dsystems.html#the-bridge-how-a-time-series-is-a-dynamical-system",
+    "title": "The Theory of Dynamics and Time Series",
+    "section": "2. The Bridge: How a Time Series is a Dynamical System",
+    "text": "2. The Bridge: How a Time Series is a Dynamical System\nA Time Series is often just a “shadow” or a partial observation of a higher-dimensional dynamical system.\nIn classical statistics, we often view a series \\(Y = \\{y_1, y_2, \\dots, y_n\\}\\) as a sequence of random variables. However, in Dynamical Systems theory, we assume there is an underlying state \\(x_t\\) that evolves according to a rule, and our data \\(y_t\\) is what we managed to measure.\n\nThe Observation Projection\n\\[y_t = h(x_t) + \\epsilon_t\\]\nWhere: * \\(x_t\\) is the true state (often hidden/latent). * \\(h\\) is the measurement function (mapping the complex system to a single number). * \\(\\epsilon_t\\) is the noise (uncertainty or measurement error).\nThe key insight: If the underlying system is deterministic, we can often “reconstruct” the dynamics of the whole system just by looking at a single time series using techniques like Delay Embedding."
+  },
+  {
+    "objectID": "dsystems.html#essential-concepts-for-analysis",
+    "href": "dsystems.html#essential-concepts-for-analysis",
+    "title": "The Theory of Dynamics and Time Series",
+    "section": "3. Essential Concepts for Analysis",
+    "text": "3. Essential Concepts for Analysis\nTo navigate the R packages on this site, it is helpful to keep these three concepts in mind:\n\n\n\n\n\n\n\nConcept\nThe “Plain English” Explanation\n\n\n\n\nAttractors\nThe “shape” the data settles into over time (e.g., a steady state, a cycle, or a strange attractor).\n\n\nPhase Space\nPlotting the system against its own derivatives or lags to see the geometry of its behavior.\n\n\nStability\nWhether a small nudge to the system returns to the original path or causes it to blow up."
+  },
+  {
+    "objectID": "dsystems.html#why-use-r-for-this",
+    "href": "dsystems.html#why-use-r-for-this",
+    "title": "The Theory of Dynamics and Time Series",
+    "section": "4. Why use R for this?",
+    "text": "4. Why use R for this?\nR provides a unique ecosystem that bridges the gap between theoretical math and empirical data.\n\nSimulation: Use packages to solve ODEs and see how theoretical models behave.\nReconstruction: Take raw, messy time series and find the “hidden” dimensions and Lyapunov exponents.\nForecasting: Use the geometry of the past to predict the trajectory of the future.\n\n\n\n\n\n\n\nTipReady to Explore?\n\n\n\nCheck the sidebar to explore R packages categorized by Simulation, Non-linear Analysis, and Statistical Forecasting."
+  }
+]

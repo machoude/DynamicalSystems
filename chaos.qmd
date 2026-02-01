@@ -1,0 +1,36 @@
+---
+title: "Chaos Theory with DChaos library"
+---
+
+## Data
+
+```{r,message=FALSE,warning=FALSE,results='hide'}
+library(DChaos)
+library(readr)
+# Load the BTC data
+btc_1d = read_csv("btc_1d_data_2018_to_2025.csv")
+btc_1d$Date = as.Date(btc_1d$`Open time`)
+btc_1d = btc_1d[,c("Date","High")]
+
+```
+
+## State space reconstruction
+
+```{r,message=FALSE,warning=FALSE,results='hide'}
+model = netfit(btc_1d$High, m = 1:6,lag = 1:6,timelapse = "FIXED",h = 2:10)
+jacobian = jacobian.net(model = model)
+summary(model)
+
+```
+
+## Lyapunov Exponent
+
+```{r,message=FALSE,warning=FALSE}
+exponent.max = lyapunov.max(data = jacobian, blocking = "BOOT",doplot = FALSE)
+summary(exponent.max)
+```
+
+```{r}
+exponent.spec = lyapunov.spec(data = jacobian, blocking = "BOOT",doplot = FALSE)
+summary(exponent.spec)
+```
