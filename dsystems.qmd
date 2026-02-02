@@ -4,7 +4,7 @@ subtitle: "Understanding the 'Hidden Engine' behind the Data"
 ---
 
 ## 1. Defining the Dynamical System
-At its core, a **Dynamical System** is a mathematical description of how a point moves through a space over time. For a STEM graduate, the most intuitive way to think about this is through the lens of **State Space**.
+At its core, a **Dynamical System** is a mathematical description of how a point moves through a space over time. The most intuitive way to think about this is through the lens of **State Space**.
 
 A system is defined by:
 

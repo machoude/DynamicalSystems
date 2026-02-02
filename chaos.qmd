@@ -16,6 +16,12 @@ btc_1d = btc_1d[,c("Date","High")]
 
 ## State space reconstruction
 
+### Taken's Theorem 
+
+We use **Takens' Theorem** to "unfold" a 1D time series into a multi-dimensional state space using embedding dimension and time-delays.
+
+The `netfit` function fits a neural network to this unfolded data. This isn't for "prediction" in the traditional sense; rather, the network serves as a differentiable surrogate for the unknown physical laws governing the system. By calculating the **Jacobian** of this network, we can rigorously quantify chaos.
+
 ```{r,message=FALSE,warning=FALSE,results='hide'}
 model = netfit(btc_1d$High, m = 1:6,lag = 1:6,timelapse = "FIXED",h = 2:10)
 jacobian = jacobian.net(model = model)
@@ -25,12 +31,23 @@ summary(model)
 
 ## Lyapunov Exponent
 
+The "ultimate tool" of chaos is a **Positive Maximum Lyapunov Exponent ($\lambda_{max} > 0$)**. 
+
+The `DChaos` package provides two main ways to find this:
+
+**`lyapunov.max()`**: Focuses specifically on the largest exponent to determine if the system is chaotic.
+
 ```{r,message=FALSE,warning=FALSE}
 exponent.max = lyapunov.max(data = jacobian, blocking = "BOOT",doplot = FALSE)
 summary(exponent.max)
 ```
 
+**`lyapunov.spec()`**: Estimates the full spectrum of exponents, allowing you to calculate the **Kaplan-Yorke Dimension** (the fractal dimension of the attractor).
+
 ```{r}
 exponent.spec = lyapunov.spec(data = jacobian, blocking = "BOOT",doplot = FALSE)
 summary(exponent.spec)
 ```
+
+
+By using a neural network to estimate the **Jacobian matrix**, `DChaos` ensures that the calculation is based on the underlying functional form of the system rather than just noisy point-to-point measurements.

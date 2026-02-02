@@ -104,6 +104,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -153,7 +182,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#data" id="toc-data" class="nav-link active" data-scroll-target="#data">Data</a></li>
-  <li><a href="#state-space-reconstruction" id="toc-state-space-reconstruction" class="nav-link" data-scroll-target="#state-space-reconstruction">State space reconstruction</a></li>
+  <li><a href="#state-space-reconstruction" id="toc-state-space-reconstruction" class="nav-link" data-scroll-target="#state-space-reconstruction">State space reconstruction</a>
+  <ul class="collapse">
+  <li><a href="#takens-theorem" id="toc-takens-theorem" class="nav-link" data-scroll-target="#takens-theorem">Taken’s Theorem</a></li>
+  </ul></li>
   <li><a href="#lyapunov-exponent" id="toc-lyapunov-exponent" class="nav-link" data-scroll-target="#lyapunov-exponent">Lyapunov Exponent</a></li>
   </ul>
 </nav>
@@ -193,14 +225,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="state-space-reconstruction" class="level2">
 <h2 class="anchored" data-anchor-id="state-space-reconstruction">State space reconstruction</h2>
+<section id="takens-theorem" class="level3">
+<h3 class="anchored" data-anchor-id="takens-theorem">Taken’s Theorem</h3>
+<p>We use <strong>Takens’ Theorem</strong> to “unfold” a 1D time series into a multi-dimensional state space using embedding dimension and time-delays.</p>
+<p>The <code>netfit</code> function fits a neural network to this unfolded data. This isn’t for “prediction” in the traditional sense; rather, the network serves as a differentiable surrogate for the unknown physical laws governing the system. By calculating the <strong>Jacobian</strong> of this network, we can rigorously quantify chaos.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">=</span> <span class="fu">netfit</span>(btc_1d<span class="sc">$</span>High, <span class="at">m =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,<span class="at">lag =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,<span class="at">timelapse =</span> <span class="st">"FIXED"</span>,<span class="at">h =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">10</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>jacobian <span class="ot">=</span> <span class="fu">jacobian.net</span>(<span class="at">model =</span> model)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
+</section>
 <section id="lyapunov-exponent" class="level2">
 <h2 class="anchored" data-anchor-id="lyapunov-exponent">Lyapunov Exponent</h2>
+<p>The “ultimate tool” of chaos is a <strong>Positive Maximum Lyapunov Exponent (<span class="math inline">\(\lambda_{max} &gt; 0\)</span>)</strong>.</p>
+<p>The <code>DChaos</code> package provides two main ways to find this:</p>
+<p><strong><code>lyapunov.max()</code></strong>: Focuses specifically on the largest exponent to determine if the system is chaotic.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>exponent.max <span class="ot">=</span> <span class="fu">lyapunov.max</span>(<span class="at">data =</span> jacobian, <span class="at">blocking =</span> <span class="st">"BOOT"</span>,<span class="at">doplot =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(exponent.max)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -217,6 +257,7 @@ Embedding dimension: 2, Time-delay: 1, No. hidden units: 2
 Sample size: 2949, Block length: 96, No. blocks: 1000</code></pre>
 </div>
 </div>
+<p><strong><code>lyapunov.spec()</code></strong>: Estimates the full spectrum of exponents, allowing you to calculate the <strong>Kaplan-Yorke Dimension</strong> (the fractal dimension of the attractor).</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>exponent.spec <span class="ot">=</span> <span class="fu">lyapunov.spec</span>(<span class="at">data =</span> jacobian, <span class="at">blocking =</span> <span class="st">"BOOT"</span>,<span class="at">doplot =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(exponent.spec)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -234,6 +275,7 @@ Embedding dimension: 2, Time-delay: 1, No. hidden units: 2
 Sample size: 2949, Block length: 96, No. blocks: 1000</code></pre>
 </div>
 </div>
+<p>By using a neural network to estimate the <strong>Jacobian matrix</strong>, <code>DChaos</code> ensures that the calculation is based on the underlying functional form of the system rather than just noisy point-to-point measurements.</p>
 
 
 </section>
