@@ -228,6 +228,11 @@ window.Quarto = {
 <section id="takens-theorem" class="level3">
 <h3 class="anchored" data-anchor-id="takens-theorem">Taken’s Theorem</h3>
 <p>We use <strong>Takens’ Theorem</strong> to “unfold” a 1D time series into a multi-dimensional state space using embedding dimension and time-delays.</p>
+<p>To “unfold” a time series, we need two critical parameters:</p>
+<ul>
+<li><strong>Time Delay (<span class="math inline">\(d\)</span>):</strong> How far apart our observations are sampled to create new dimensions. It ensures our coordinates are mathematically independent.</li>
+<li><strong>Embedding Dimension (<span class="math inline">\(m\)</span>):</strong> The total number of dimensions needed to ensure the system’s trajectory doesn’t intersect itself.</li>
+</ul>
 <p>The <code>netfit</code> function fits a neural network to this unfolded data. This isn’t for “prediction” in the traditional sense; rather, the network serves as a differentiable surrogate for the unknown physical laws governing the system. By calculating the <strong>Jacobian</strong> of this network, we can rigorously quantify chaos.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">=</span> <span class="fu">netfit</span>(btc_1d<span class="sc">$</span>High, <span class="at">m =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,<span class="at">lag =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,<span class="at">timelapse =</span> <span class="st">"FIXED"</span>,<span class="at">h =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">10</span>)</span>

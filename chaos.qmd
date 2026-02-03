@@ -20,6 +20,11 @@ btc_1d = btc_1d[,c("Date","High")]
 
 We use **Takens' Theorem** to "unfold" a 1D time series into a multi-dimensional state space using embedding dimension and time-delays.
 
+To "unfold" a time series, we need two critical parameters:
+
+* **Time Delay ($d$):** How far apart our observations are sampled to create new dimensions. It ensures our coordinates are mathematically independent.
+* **Embedding Dimension ($m$):** The total number of dimensions needed to ensure the system's trajectory doesn't intersect itself.
+
 The `netfit` function fits a neural network to this unfolded data. This isn't for "prediction" in the traditional sense; rather, the network serves as a differentiable surrogate for the unknown physical laws governing the system. By calculating the **Jacobian** of this network, we can rigorously quantify chaos.
 
 ```{r,message=FALSE,warning=FALSE,results='hide'}
