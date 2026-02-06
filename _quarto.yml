@@ -11,7 +11,7 @@ website:
       - href: dsystems.qmd
         text: Dynamical Systems   
       - href: chaos.qmd
-        text: DChaos
+        text: Chaos
       - href: fractal.qmd
         text: Fractals   
 

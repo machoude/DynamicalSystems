@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>The Theory of Dynamics and Time Series – Dynamical Systems with R</title>
+<title>Fractal Dimensions with fractaldim library – Dynamical Systems with R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -123,7 +158,7 @@ window.Quarto = {
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./dsystems.html" aria-current="page"> 
+    <a class="nav-link" href="./dsystems.html"> 
 <span class="menu-text">Dynamical Systems</span></a>
   </li>  
   <li class="nav-item">
@@ -131,7 +166,7 @@ window.Quarto = {
 <span class="menu-text">Chaos</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./fractal.html"> 
+    <a class="nav-link active" href="./fractal.html" aria-current="page"> 
 <span class="menu-text">Fractals</span></a>
   </li>  
 </ul>
@@ -150,16 +185,14 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#defining-the-dynamical-system" id="toc-defining-the-dynamical-system" class="nav-link active" data-scroll-target="#defining-the-dynamical-system">1. Defining the Dynamical System</a>
+  <li><a href="#data" id="toc-data" class="nav-link active" data-scroll-target="#data">Data</a></li>
+  <li><a href="#beyond-euclidean-geometry" id="toc-beyond-euclidean-geometry" class="nav-link" data-scroll-target="#beyond-euclidean-geometry">Beyond Euclidean Geometry</a></li>
+  <li><a href="#interpreting-the-values" id="toc-interpreting-the-values" class="nav-link" data-scroll-target="#interpreting-the-values">Interpreting the Values</a></li>
+  <li><a href="#the-fractaldim-library-in-r" id="toc-the-fractaldim-library-in-r" class="nav-link" data-scroll-target="#the-fractaldim-library-in-r">The fractaldim Library in R</a>
   <ul class="collapse">
-  <li><a href="#the-two-flavors-of-time" id="toc-the-two-flavors-of-time" class="nav-link" data-scroll-target="#the-two-flavors-of-time">The Two Flavors of Time</a></li>
+  <li><a href="#key-estimation-methods" id="toc-key-estimation-methods" class="nav-link" data-scroll-target="#key-estimation-methods">Key Estimation Methods</a></li>
   </ul></li>
-  <li><a href="#the-bridge-how-a-time-series-is-a-dynamical-system" id="toc-the-bridge-how-a-time-series-is-a-dynamical-system" class="nav-link" data-scroll-target="#the-bridge-how-a-time-series-is-a-dynamical-system">2. The Bridge: How a Time Series is a Dynamical System</a>
-  <ul class="collapse">
-  <li><a href="#the-observation-projection" id="toc-the-observation-projection" class="nav-link" data-scroll-target="#the-observation-projection">The Observation Projection</a></li>
-  </ul></li>
-  <li><a href="#essential-concepts-for-analysis" id="toc-essential-concepts-for-analysis" class="nav-link" data-scroll-target="#essential-concepts-for-analysis">3. Essential Concepts for Analysis</a></li>
-  <li><a href="#why-use-r-for-this" id="toc-why-use-r-for-this" class="nav-link" data-scroll-target="#why-use-r-for-this">4. Why use R for this?</a></li>
+  <li><a href="#practical-implementation" id="toc-practical-implementation" class="nav-link" data-scroll-target="#practical-implementation">Practical Implementation</a></li>
   </ul>
 </nav>
     </div>
@@ -168,8 +201,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">The Theory of Dynamics and Time Series</h1>
-<p class="subtitle lead">Understanding the ‘Hidden Engine’ behind the Data</p>
+<h1 class="title">Fractal Dimensions with fractaldim library</h1>
 </div>
 
 
@@ -186,86 +218,96 @@ window.Quarto = {
 </header>
 
 
-<section id="defining-the-dynamical-system" class="level2">
-<h2 class="anchored" data-anchor-id="defining-the-dynamical-system">1. Defining the Dynamical System</h2>
-<p>At its core, a <strong>Dynamical System</strong> is a mathematical description of how a point moves through a space over time. The most intuitive way to think about this is through the lens of <strong>State Space</strong>.</p>
-<p>A system is defined by:</p>
-<ol type="1">
-<li><strong>State Space (<span class="math inline">\(M\)</span>):</strong> The manifold or set containing all possible states of the system (e.g., the position and momentum of a planet).</li>
-<li><strong>Evolution Rule:</strong> A deterministic or stochastic function that dictates the future state based on the current one.</li>
-</ol>
-<section id="the-two-flavors-of-time" class="level3">
-<h3 class="anchored" data-anchor-id="the-two-flavors-of-time">The Two Flavors of Time</h3>
-<p>In R, we typically deal with two types of mathematical representations:</p>
-<ul>
-<li><p><strong>Continuous-Time (Flows):</strong> Modeled by Differential Equations. We focus on the <em>rate of change</em>. <span class="math display">\[\frac{dx}{dt} = f(x, t)\]</span> <em>Used in: Physics simulations, chemical kinetics, and population models.</em></p></li>
-<li><p><strong>Discrete-Time (Maps):</strong> Modeled by Difference Equations. We focus on the <em>step</em> from one moment to the next. <span class="math display">\[x_{n+1} = f(x_n)\]</span> <em>Used in: Financial modeling, digital signal processing, and iterative algorithms.</em></p></li>
-</ul>
-<hr>
+<section id="data" class="level2">
+<h2 class="anchored" data-anchor-id="data">Data</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the BTC data</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>btc_1d <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">"btc_1d_data_2018_to_2025.csv"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>btc_1d<span class="sc">$</span>Date <span class="ot">=</span> <span class="fu">as.Date</span>(btc_1d<span class="sc">$</span><span class="st">`</span><span class="at">Open time</span><span class="st">`</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>btc_1d <span class="ot">=</span> btc_1d[,<span class="fu">c</span>(<span class="st">"Date"</span>,<span class="st">"High"</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </section>
+<section id="beyond-euclidean-geometry" class="level2">
+<h2 class="anchored" data-anchor-id="beyond-euclidean-geometry">Beyond Euclidean Geometry</h2>
+<p>In standard geometry, we deal with integer dimensions: a point (0D), a line (1D), and a plane (2D). However, natural phenomena—like the jagged path of a stock price or the silhouette of a mountain—often exist in the “fractional” space between these integers.</p>
+<p><strong>Fractal Dimension (<span class="math inline">\(D\)</span>)</strong> measures how a pattern’s detail changes with the scale at which it is measured. The most intuitive definition is the <strong>Scaling Law</strong>:</p>
+<p>If you reduce the measurement scale by a factor of <span class="math inline">\(L\)</span> and find <span class="math inline">\(N\)</span> number of self-similar pieces, the dimension is: <span class="math display">\[D = \frac{\log(N)}{\log(L)}\]</span></p>
 </section>
-<section id="the-bridge-how-a-time-series-is-a-dynamical-system" class="level2">
-<h2 class="anchored" data-anchor-id="the-bridge-how-a-time-series-is-a-dynamical-system">2. The Bridge: How a Time Series is a Dynamical System</h2>
-<p>A <strong>Time Series</strong> is often just a “shadow” or a partial observation of a higher-dimensional dynamical system.</p>
-<p>In classical statistics, we often view a series <span class="math inline">\(Y = \{y_1, y_2, \dots, y_n\}\)</span> as a sequence of random variables. However, in Dynamical Systems theory, we assume there is an underlying state <span class="math inline">\(x_t\)</span> that evolves according to a rule, and our data <span class="math inline">\(y_t\)</span> is what we managed to measure.</p>
-<section id="the-observation-projection" class="level3">
-<h3 class="anchored" data-anchor-id="the-observation-projection">The Observation Projection</h3>
-<p><span class="math display">\[y_t = h(x_t) + \epsilon_t\]</span></p>
-<p>Where: * <span class="math inline">\(x_t\)</span> is the <strong>true state</strong> (often hidden/latent). * <span class="math inline">\(h\)</span> is the <strong>measurement function</strong> (mapping the complex system to a single number). * <span class="math inline">\(\epsilon_t\)</span> is the <strong>noise</strong> (uncertainty or measurement error).</p>
-<p><strong>The key insight:</strong> If the underlying system is deterministic, we can often “reconstruct” the dynamics of the whole system just by looking at a single time series using techniques like <strong>Delay Embedding</strong>.</p>
-<hr>
-</section>
-</section>
-<section id="essential-concepts-for-analysis" class="level2">
-<h2 class="anchored" data-anchor-id="essential-concepts-for-analysis">3. Essential Concepts for Analysis</h2>
-<p>To navigate the R packages on this site, it is helpful to keep these three concepts in mind:</p>
+<section id="interpreting-the-values" class="level2">
+<h2 class="anchored" data-anchor-id="interpreting-the-values">Interpreting the Values</h2>
+<p>When analyzing a 1D time series, your calculated <span class="math inline">\(D\)</span> will typically fall between <strong>1.0</strong> and <strong>2.0</strong>. Here is how to interpret the “physics” of those numbers:</p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Concept</th>
-<th style="text-align: left;">The “Plain English” Explanation</th>
+<th style="text-align: left;">Fractal Dimension (<span class="math inline">\(D\)</span>)</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">Visual Texture</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;"><strong>Attractors</strong></td>
-<td style="text-align: left;">The “shape” the data settles into over time (e.g., a steady state, a cycle, or a strange attractor).</td>
+<td style="text-align: left;"><strong><span class="math inline">\(D \approx 1.0\)</span></strong></td>
+<td style="text-align: left;">Differentiable</td>
+<td style="text-align: left;">Smooth, predictable curves or straight lines.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><strong>Phase Space</strong></td>
-<td style="text-align: left;">Plotting the system against its own derivatives or lags to see the geometry of its behavior.</td>
+<td style="text-align: left;"><strong><span class="math inline">\(1.2 &lt; D &lt; 1.3\)</span></strong></td>
+<td style="text-align: left;">Low Complexity</td>
+<td style="text-align: left;">Gentle oscillations with minor noise.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;"><strong>Stability</strong></td>
-<td style="text-align: left;">Whether a small nudge to the system returns to the original path or causes it to blow up.</td>
+<td style="text-align: left;"><strong><span class="math inline">\(D \approx 1.5\)</span></strong></td>
+<td style="text-align: left;">Brownian Motion</td>
+<td style="text-align: left;">The “Random Walk.” Unpredictable with no long-term memory.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong><span class="math inline">\(D \to 2.0\)</span></strong></td>
+<td style="text-align: left;">Space-Filling</td>
+<td style="text-align: left;">Extremely “jagged” and volatile; the line moves so much it nearly fills a 2D area.</td>
 </tr>
 </tbody>
 </table>
-<hr>
 </section>
-<section id="why-use-r-for-this" class="level2">
-<h2 class="anchored" data-anchor-id="why-use-r-for-this">4. Why use R for this?</h2>
-<p>R provides a unique ecosystem that bridges the gap between <strong>theoretical math</strong> and <strong>empirical data</strong>.</p>
+<section id="the-fractaldim-library-in-r" class="level2">
+<h2 class="anchored" data-anchor-id="the-fractaldim-library-in-r">The fractaldim Library in R</h2>
+<p>The <code>fractaldim</code> package is the preferred tool for high-performance estimation. It provides several algorithms to calculate <span class="math inline">\(D\)</span>, as different methods have different sensitivities to noise and signal length.</p>
+<section id="key-estimation-methods" class="level3">
+<h3 class="anchored" data-anchor-id="key-estimation-methods">Key Estimation Methods</h3>
 <ul>
-<li><strong>Simulation:</strong> Use packages to solve ODEs and see how theoretical models behave.</li>
-<li><strong>Reconstruction:</strong> Take raw, messy time series and find the “hidden” dimensions and Lyapunov exponents.</li>
-<li><strong>Forecasting:</strong> Use the geometry of the past to predict the trajectory of the future.</li>
+<li><p><strong>Box-Counting (<code>boxcount</code>):</strong> The most famous method. It covers the signal with a grid of boxes of size <span class="math inline">\(\epsilon\)</span> and counts how many boxes are intercepted by the signal.</p></li>
+<li><p><strong>Variogram (<code>variogram</code>):</strong> Analyzes the variance of increments. This is often the most robust method for signals that resemble stochastic processes.</p></li>
+<li><p><strong>Hall-Wood (<code>hallwood</code>):</strong> A specialized estimator designed to reduce bias in small samples or very noisy data.</p></li>
 </ul>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
+</section>
+</section>
+<section id="practical-implementation" class="level2">
+<h2 class="anchored" data-anchor-id="practical-implementation">Practical Implementation</h2>
+<p>To use this in your workflow, you generally pass a numeric vector to the <code>fd.estimate</code> function.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fractaldim)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: abind</code></pre>
 </div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Ready to Explore?
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimate the dimension using multiple methods</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># It is best practice to compare a few methods to ensure consistency</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>estimate.b <span class="ot">&lt;-</span> <span class="fu">fd.estimate</span>(btc_1d<span class="sc">$</span>High, <span class="at">methods =</span> <span class="st">"boxcount"</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>estimate.v <span class="ot">&lt;-</span> <span class="fu">fd.estimate</span>(btc_1d<span class="sc">$</span>High, <span class="at">methods =</span> <span class="st">"variogram"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Access the numerical results</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Estimated D (Box-count):"</span>, estimate.b<span class="sc">$</span>fd)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Estimated D (Box-count): 1.413444</code></pre>
 </div>
-<div class="callout-body-container callout-body">
-<p>Check the sidebar to explore R packages categorized by <strong>Simulation</strong>, <strong>Non-linear Analysis</strong>, and <strong>Statistical Forecasting</strong>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Estimated D (Variogram):"</span>, estimate.v<span class="sc">$</span>fd)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Estimated D (Variogram): 1.429565</code></pre>
 </div>
 </div>
 

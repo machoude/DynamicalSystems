@@ -28,6 +28,13 @@
     "text": "Lyapunov Exponent\nThe “ultimate tool” of chaos is a Positive Maximum Lyapunov Exponent (\\(\\lambda_{max} &gt; 0\\)).\nThe DChaos package provides two main ways to find this:\nlyapunov.max(): Focuses specifically on the largest exponent to determine if the system is chaotic.\n\nexponent.max = lyapunov.max(data = jacobian, blocking = \"BOOT\",doplot = FALSE)\nsummary(exponent.max)\n\nCall:\nLargest Lyapunov exponent \n\nCoefficients:\n            Estimate Std. Error   z value     Pr(&gt;|z|)\nExponent -0.07216916 0.03391099 -20.85195 7.316176e-97\n---\nProcedure: Norma-2 by bootstrap blocking method \nEmbedding dimension: 2, Time-delay: 1, No. hidden units: 2\nSample size: 2949, Block length: 96, No. blocks: 1000\n\n\nlyapunov.spec(): Estimates the full spectrum of exponents, allowing you to calculate the Kaplan-Yorke Dimension (the fractal dimension of the attractor).\n\nexponent.spec = lyapunov.spec(data = jacobian, blocking = \"BOOT\",doplot = FALSE)\nsummary(exponent.spec)\n\nCall:\nLyapunov exponent spectrum \n\nCoefficients:\n              Estimate  Std. Error     z value     Pr(&gt;|z|)\nExponent 1 -0.07213056 0.034124864   -20.71018 1.401906e-95\nExponent 2 -2.16370134 0.006763006 -3134.67959 0.000000e+00\n---\nProcedure: QR decomposition by bootstrap blocking method \nEmbedding dimension: 2, Time-delay: 1, No. hidden units: 2\nSample size: 2949, Block length: 96, No. blocks: 1000\n\n\nBy using a neural network to estimate the Jacobian matrix, DChaos ensures that the calculation is based on the underlying functional form of the system rather than just noisy point-to-point measurements."
   },
   {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Project Guide",
+    "section": "",
+    "text": "Overview\nThis website collects theory-driven examples of dynamical systems implemented in R, with an emphasis on nonlinear dynamics, chaos, and predictability from time series.\nThe goal is not speed. The goal is understanding.\nStart with nonlinear dynamical systems, then move to practical tools like the DChaos library."
+  },
+  {
     "objectID": "dsystems.html",
     "href": "dsystems.html",
     "title": "The Theory of Dynamics and Time Series",
@@ -63,10 +70,45 @@
     "text": "4. Why use R for this?\nR provides a unique ecosystem that bridges the gap between theoretical math and empirical data.\n\nSimulation: Use packages to solve ODEs and see how theoretical models behave.\nReconstruction: Take raw, messy time series and find the “hidden” dimensions and Lyapunov exponents.\nForecasting: Use the geometry of the past to predict the trajectory of the future.\n\n\n\n\n\n\n\nTipReady to Explore?\n\n\n\nCheck the sidebar to explore R packages categorized by Simulation, Non-linear Analysis, and Statistical Forecasting."
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Project Guide",
+    "objectID": "fractal.html",
+    "href": "fractal.html",
+    "title": "Fractal Dimensions with fractaldim library",
     "section": "",
-    "text": "Overview\nThis website collects theory-driven examples of dynamical systems implemented in R, with an emphasis on nonlinear dynamics, chaos, and predictability from time series.\nThe goal is not speed. The goal is understanding.\nStart with nonlinear dynamical systems, then move to practical tools like the DChaos library."
+    "text": "library(readr)\n# Load the BTC data\nbtc_1d = read_csv(\"btc_1d_data_2018_to_2025.csv\")\nbtc_1d$Date = as.Date(btc_1d$`Open time`)\nbtc_1d = btc_1d[,c(\"Date\",\"High\")]"
+  },
+  {
+    "objectID": "fractal.html#data",
+    "href": "fractal.html#data",
+    "title": "Fractal Dimensions with fractaldim library",
+    "section": "",
+    "text": "library(readr)\n# Load the BTC data\nbtc_1d = read_csv(\"btc_1d_data_2018_to_2025.csv\")\nbtc_1d$Date = as.Date(btc_1d$`Open time`)\nbtc_1d = btc_1d[,c(\"Date\",\"High\")]"
+  },
+  {
+    "objectID": "fractal.html#beyond-euclidean-geometry",
+    "href": "fractal.html#beyond-euclidean-geometry",
+    "title": "Fractal Dimensions with fractaldim library",
+    "section": "Beyond Euclidean Geometry",
+    "text": "Beyond Euclidean Geometry\nIn standard geometry, we deal with integer dimensions: a point (0D), a line (1D), and a plane (2D). However, natural phenomena—like the jagged path of a stock price or the silhouette of a mountain—often exist in the “fractional” space between these integers.\nFractal Dimension (\\(D\\)) measures how a pattern’s detail changes with the scale at which it is measured. The most intuitive definition is the Scaling Law:\nIf you reduce the measurement scale by a factor of \\(L\\) and find \\(N\\) number of self-similar pieces, the dimension is: \\[D = \\frac{\\log(N)}{\\log(L)}\\]"
+  },
+  {
+    "objectID": "fractal.html#interpreting-the-values",
+    "href": "fractal.html#interpreting-the-values",
+    "title": "Fractal Dimensions with fractaldim library",
+    "section": "Interpreting the Values",
+    "text": "Interpreting the Values\nWhen analyzing a 1D time series, your calculated \\(D\\) will typically fall between 1.0 and 2.0. Here is how to interpret the “physics” of those numbers:\n\n\n\n\n\n\n\n\nFractal Dimension (\\(D\\))\nDescription\nVisual Texture\n\n\n\n\n\\(D \\approx 1.0\\)\nDifferentiable\nSmooth, predictable curves or straight lines.\n\n\n\\(1.2 &lt; D &lt; 1.3\\)\nLow Complexity\nGentle oscillations with minor noise.\n\n\n\\(D \\approx 1.5\\)\nBrownian Motion\nThe “Random Walk.” Unpredictable with no long-term memory.\n\n\n\\(D \\to 2.0\\)\nSpace-Filling\nExtremely “jagged” and volatile; the line moves so much it nearly fills a 2D area."
+  },
+  {
+    "objectID": "fractal.html#the-fractaldim-library-in-r",
+    "href": "fractal.html#the-fractaldim-library-in-r",
+    "title": "Fractal Dimensions with fractaldim library",
+    "section": "The fractaldim Library in R",
+    "text": "The fractaldim Library in R\nThe fractaldim package is the preferred tool for high-performance estimation. It provides several algorithms to calculate \\(D\\), as different methods have different sensitivities to noise and signal length.\n\nKey Estimation Methods\n\nBox-Counting (boxcount): The most famous method. It covers the signal with a grid of boxes of size \\(\\epsilon\\) and counts how many boxes are intercepted by the signal.\nVariogram (variogram): Analyzes the variance of increments. This is often the most robust method for signals that resemble stochastic processes.\nHall-Wood (hallwood): A specialized estimator designed to reduce bias in small samples or very noisy data."
+  },
+  {
+    "objectID": "fractal.html#practical-implementation",
+    "href": "fractal.html#practical-implementation",
+    "title": "Fractal Dimensions with fractaldim library",
+    "section": "Practical Implementation",
+    "text": "Practical Implementation\nTo use this in your workflow, you generally pass a numeric vector to the fd.estimate function.\n\nlibrary(fractaldim)\n\nLoading required package: abind\n\n# Estimate the dimension using multiple methods\n# It is best practice to compare a few methods to ensure consistency\nestimate.b &lt;- fd.estimate(btc_1d$High, methods = \"boxcount\")\nestimate.v &lt;- fd.estimate(btc_1d$High, methods = \"variogram\")\n\n\n# Access the numerical results\ncat(\"Estimated D (Box-count):\", estimate.b$fd)\n\nEstimated D (Box-count): 1.413444\n\ncat(\"Estimated D (Variogram):\", estimate.v$fd)\n\nEstimated D (Variogram): 1.429565"
   }
 ]
