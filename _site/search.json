@@ -35,6 +35,41 @@
     "text": "Overview\nThis website collects theory-driven examples of dynamical systems implemented in R, with an emphasis on nonlinear dynamics, chaos, and predictability from time series.\nThe goal is not speed. The goal is understanding.\nStart with nonlinear dynamical systems, then move to practical tools like the DChaos library."
   },
   {
+    "objectID": "chaos01.html",
+    "href": "chaos01.html",
+    "title": "The 0-1 Test for Chaos with Chaos01",
+    "section": "",
+    "text": "library(DChaos)\nlibrary(readr)\n# Load the BTC data\nbtc_1d = read_csv(\"btc_1d_data_2018_to_2025.csv\")\nbtc_1d$Date = as.Date(btc_1d$`Open time`)\nbtc_1d = btc_1d[,c(\"Date\",\"High\")]"
+  },
+  {
+    "objectID": "chaos01.html#data",
+    "href": "chaos01.html#data",
+    "title": "The 0-1 Test for Chaos with Chaos01",
+    "section": "",
+    "text": "library(DChaos)\nlibrary(readr)\n# Load the BTC data\nbtc_1d = read_csv(\"btc_1d_data_2018_to_2025.csv\")\nbtc_1d$Date = as.Date(btc_1d$`Open time`)\nbtc_1d = btc_1d[,c(\"Date\",\"High\")]"
+  },
+  {
+    "objectID": "chaos01.html#test-for-chaos",
+    "href": "chaos01.html#test-for-chaos",
+    "title": "The 0-1 Test for Chaos with Chaos01",
+    "section": "0-1 Test for Chaos",
+    "text": "0-1 Test for Chaos\nThe 0-1 Test is a binary diagnostic for determinism and chaos. While the Lyapunov Exponent asks, “How fast do nearby points diverge?”, the 0-1 Test asks, “Does the data behave like a predictable machine or like a random walk?”"
+  },
+  {
+    "objectID": "chaos01.html#the-core-intuition",
+    "href": "chaos01.html#the-core-intuition",
+    "title": "The 0-1 Test for Chaos with Chaos01",
+    "section": "The Core Intuition",
+    "text": "The Core Intuition\nImagine taking your time series and using its values to “drive” a point on a 2D plane.\n\nIf the system is Regular (periodic), the point will move in circles or stay in a tight, bounded area.\nIf the system is Chaotic, the point will wander away from its starting position, mimicking a Brownian Motion (random walk)."
+  },
+  {
+    "objectID": "chaos01.html#how-the-algorithm-works",
+    "href": "chaos01.html#how-the-algorithm-works",
+    "title": "The 0-1 Test for Chaos with Chaos01",
+    "section": "2. How the Algorithm Works",
+    "text": "2. How the Algorithm Works\nThe 0-1 Test avoids the complexities of phase space reconstruction by mapping the 1D time series into a 2-dimensional plane. Think of it as a “driven” system where your data acts as the steering input for a particle.\n\nStep 1: Coordinate Transformation\nGiven a time series \\(x_n\\) for \\(n = 1, 2, \\dots, N\\), we choose a constant \\(c \\in (0, \\pi)\\) and define two new coordinates, \\(p_n\\) and \\(q_n\\):\n\\[p_n = \\sum_{j=1}^{n} x_j \\cos(jc), \\quad q_n = \\sum_{j=1}^{n} x_j \\sin(jc)\\]\nThese coordinates represent a trajectory in a 2D plane (the \\((p,q)\\)-plane).\n\n\nStep 2: Mean Square Displacement (MSD)\nWe analyze how the distance from the origin grows over time. We calculate the Mean Square Displacement, denoted as \\(M_n\\):\n\\[M_n = \\lim_{N \\to \\infty} \\frac{1}{N} \\sum_{j=1}^{N} [ (p_{j+n} - p_j)^2 + (q_{j+n} - q_j)^2 ]\\]\n\nIf the system is Regular: the \\((p,q)\\) trajectory stays in a bounded area (like a circle or a torus), and the \\(M_n\\) remains small and bounded.\nIf the system is Chaotic: the \\((p,q)\\) trajectory behaves like a Brownian Motion, and \\(M_n\\) grows linearly with time \\(n\\).\n\n\n\nStep 3: The Chaos Parameter (\\(K\\))\nThe final step is to determine the growth rate of \\(M_n\\). This is typically done by calculating the correlation between \\(M_n\\) and the time \\(n\\).\nThe result is the \\(K\\)-value: * \\(K \\approx 0\\): Indicates a non-chaotic (periodic or quasi-periodic) system. * \\(K \\approx 1\\): Indicates a chaotic system.\n\n\n\n\n\n\nImportantWhy it works\n\n\n\nThe 0-1 test is essentially a test for the Statistical Limit Theorem. In the periodic case, the coordinates \\(p\\) and \\(q\\) satisfy a central limit theorem type of behavior only if the system is chaotic, causing the diffusive (random walk) behavior in the \\((p,q)\\)-plane."
+  },
+  {
     "objectID": "dsystems.html",
     "href": "dsystems.html",
     "title": "The Theory of Dynamics and Time Series",

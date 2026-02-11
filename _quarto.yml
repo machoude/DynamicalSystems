@@ -12,6 +12,8 @@ website:
         text: Dynamical Systems   
       - href: chaos.qmd
         text: Chaos
+      - href: chaos01.qmd
+        text: Chaos01
       - href: fractal.qmd
         text: Fractals   
 
